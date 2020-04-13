@@ -1,12 +1,12 @@
 Package: RMAFster
-Title: What the Package Does (One Line, Title Case)
+Title: Calculate and Explote RNA Mutant Allele Frequencies
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Franco",
+           family = "Caramia",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "franco.caramia@petermac.org",
+           comment = c(ORCID = "0000-0002-5086-2544"))
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
