@@ -2,7 +2,7 @@
 RmafsterCalc <- function(mutations=NULL, samples=NULL){
 
   use_all = F
-  if(is.null(mutation_file)){
+  if(is.null(mutations)){
     stop("mutations are required")
   }
   if(is.null(samples)){
