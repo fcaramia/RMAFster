@@ -26,3 +26,5 @@ Config/reticulate:
       list(package = "pysam", pip = TRUE)
     )
   )
+Suggests: 
+    testthat
