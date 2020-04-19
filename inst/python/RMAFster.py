@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import pysam
 import sys
 import getopt
