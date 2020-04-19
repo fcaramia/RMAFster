@@ -55,9 +55,9 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
   cmd_o_file = paste('-o',"output_file.csv",sep = '')
 
   if(use_all==T){
-    cmd_samples = c(paste("-a",paste(samples$sample_id,samples$bam_path,sep = ':'),sep = ''))
+    cmd_samples = c(paste("-a",paste(samples$bam_path,samples$sample_id,sep = ':'),sep = ''))
   } else {
-    cmd_samples = c(paste("-i",paste(samples$sample_id,samples$bam_path,sep = ':'),sep = ''))
+    cmd_samples = c(paste("-i",paste(samples$bam_path,samples$sample_id,sep = ':'),sep = ''))
   }
 
   #Check if python3 is in path
