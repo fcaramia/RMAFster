@@ -179,11 +179,11 @@ def rmafster(argv):
     for s in sample_map_all:
         print("Sample: " + s + " File: " + sample_map_all[s] + "\n")
 
-    print('Output file is:')
-    print(outputfile)
+    # print('Output file is:')
+    # print(outputfile)
 
-    print('Mutation file is:')
-    print(mutationfile)
+    # print('Mutation file is:')
+    # print(mutationfile)
 
     csv.field_size_limit(sys.maxsize)
 
