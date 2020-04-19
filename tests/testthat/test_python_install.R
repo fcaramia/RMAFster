@@ -1,8 +1,8 @@
-context("Python3 installed")
+context("Python3 and pysam installed")
 
 test_that("check for Python3 installation", {
 
-  expect_equal(reticulate::use_python('/usr/local/bin/python3',required = T),TRUE)
+  expect_equal(reticulate::use_python('/usr/local/bin/python3',required = T),"/usr/local/bin/python3")
 
 })
 
