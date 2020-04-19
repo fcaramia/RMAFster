@@ -1,3 +1,3 @@
 .onLoad <- function(libname, pkgname){
-  reticulate::source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
+  rmafster <<- import_from_path(module = 'RMAFster',path = 'inst/python/')
 }
