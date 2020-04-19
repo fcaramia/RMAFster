@@ -62,6 +62,7 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
 
   ##Get the RMAFSter function from python script
   #reticulate::source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
+  rmafster <<- reticulate::import_from_path(module = 'RMAFster',path = 'inst/python/')
   ##Call RMAFster function in python
   rmafster(c(cmd_m_file,cmd_o_file,cmd_samples))
 
@@ -78,7 +79,7 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
     file.remove('mutations_file.csv')
   }
 
-  #rm(rmafster)
+  rm(rmafster)
   return(ret_df)
 
 }
