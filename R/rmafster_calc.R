@@ -60,8 +60,6 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
     cmd_samples = c(paste("-i",paste(samples$bam_path,samples$sample_id,sep = ':'),sep = ''))
   }
 
-  #Check if python3 is in path
-  reticulate::use_python('/usr/local/bin/python3', required = T)
   ##Get the RMAFSter function from python script
   reticulate::source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
   ##Call RMAFster function in python
@@ -80,6 +78,7 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
     file.remove('mutations_file.csv')
   }
 
+  rm(rmafster)
   return(ret_df)
 
 }
