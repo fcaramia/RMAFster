@@ -1,6 +1,10 @@
 #' @export
 RmafsterCalc <- function(mutations=NULL, samples=NULL){
 
+  ##Get the RMAFSter function from python module
+  #reticulate::source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
+  rmafster <<- reticulate::import_from_path(module = 'RMAFster',path = 'inst/python/')
+
   use_all = F
   if(is.null(mutations)){
     stop("mutations are required")
