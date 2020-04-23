@@ -109,7 +109,7 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
 
   if (file.exists('output_file.csv')) {
     #Delete file if it exists
-    ret_df = fread('output_file.csv')
+    ret_df = fread('output_file.csv',stringsAsFactors = F)
     file.remove('output_file.csv')
   } else {
     stop("RMAFster did not finish, exiting")
