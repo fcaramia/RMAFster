@@ -21,7 +21,8 @@ SystemRequirements: Python (>= 3.0.0)
 Imports:
     data.table,
     dplyr,
-    reticulate
+    reticulate,
+    lifecycle
 Config/reticulate:
   list(
     packages = list(
@@ -30,3 +31,5 @@ Config/reticulate:
   )
 Suggests: 
     testthat
+RdMacros: 
+    lifecycle

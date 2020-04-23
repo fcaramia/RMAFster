@@ -1,9 +1,55 @@
+#' \lifecycle{experimental}
+#'
+#' @description RmafsterCalc() calculates RMAFs for a set of mutations in specific BAM files.
+#'
+#' @import data.table
+#' @importFrom reticulate source_python
+#' @importFrom dplyr left_join
+#'
+#' @name RmafsterCalc
+#'
+#' @param mutations a data frame of mutations.
+#' Required columns:
+#' chr: chromosome,
+#' pos: genomic position,
+#' ref: reference or wildtype allele,
+#' alt: mutated allele.
+#' Optional Columns:
+#' symbol: gene symbol,
+#' sample_id: the mutations are specific for samples, otherwise all mutations will searched in all samples,
+#' var: mutations type, defaults to 'SNP',
+#' vaf: variant allele frequency for mutation (defaults to 0.5),
+#' dna_dp: depth of dna sequencing for mutation (defaults to 200)
+#' @param samples a data frame of samples
+#' Required columns:
+#' sample_id: an id for each sample,
+#' bam_path: full path for bam file (bai must be present in directory).
+#' Optional columns:
+#' purity: tumour purity for sample (defaults to 1)
+#' @examples
+#' samples = data.frame(
+#'                sample_id='CT26',
+#'                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
+#'                package = 'RMAFster', mustWork=TRUE),
+#'                purity=1)
+#' mutations = data.frame(
+#'                  chr='chr8',
+#'                  pos=115305465,
+#'                  ref='G',
+#'                  alt='A',
+#'                  sample_id='CT26',
+#'                  symbol ='Cntnap4')
+#' RmafsterCalc(
+#'      mutations,
+#'      samples
+#' )
 #' @export
 RmafsterCalc <- function(mutations=NULL, samples=NULL){
 
+  ##The holder for the python function
+  rmafster = NULL
   ##Get the RMAFSter function from python module
-  reticulate::source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
-  #rmafster <<- reticulate::import_from_path(module = 'RMAFster',path = 'python/')
+  source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
 
   use_all = F
   if(is.null(mutations)){
@@ -49,12 +95,7 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
   if( !'bam_path'%in%colnames(samples) ){
     stop("bam_path column missing in sample file")
   }
-  if( !'purity'%in%colnames(samples) ){
-    warning('purity column not found in sample file, using 1 for all samples')
-    mutations$purity = 1
-  }
-
-  data.table::fwrite(mutations,"mutation_file.csv",sep = ',')
+  fwrite(mutations,"mutation_file.csv",sep = ',')
   cmd_m_file = paste('-m',"mutation_file.csv",sep = '')
   cmd_o_file = paste('-o',"output_file.csv",sep = '')
 
@@ -63,16 +104,12 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
   } else {
     cmd_samples = c(paste("-i",paste(samples$bam_path,samples$sample_id,sep = ':'),sep = ''))
   }
-
-  ##Get the RMAFSter function from python script
-  #reticulate::source_python(system.file('python/RMAFster.py',package = 'RMAFster',mustWork = T))
-  #rmafster <<- reticulate::import_from_path(module = 'RMAFster',path = 'inst/python/')
   ##Call RMAFster function in python
   rmafster(c(cmd_m_file,cmd_o_file,cmd_samples))
 
   if (file.exists('output_file.csv')) {
     #Delete file if it exists
-    ret_df = data.table::fread('output_file.csv')
+    ret_df = fread('output_file.csv')
     file.remove('output_file.csv')
   } else {
     stop("RMAFster did not finish, exiting")
@@ -83,7 +120,13 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
     file.remove('mutations_file.csv')
   }
 
-  rm(rmafster)
-  return(ret_df)
+  #Merge mutations with purity
+  if( !'purity'%in%colnames(samples) ){
+    warning('purity column not found in samples file, using 1 for all samples')
+    mutations$purity = 1
+  }else{
+    ret_df <- left_join(ret_df,samples[,c('sample_id','purity')],by = c('sample_id'))
+  }
 
+  return(ret_df)
 }
