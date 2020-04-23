@@ -12,7 +12,7 @@ Description: RMAFster calculates and explores RNA Mutated Allele Frequencies (RM
   It searches for previously detected DNA mutations in mRNA and calculates statistics under 2 hypotheses:
   Mutations are expressed in a bi-allelic manner and DNA Variant Allele Frequencies (VAF) are proportional
   to RMAFs. 
-License: use_mit_license()
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -20,6 +20,7 @@ RoxygenNote: 7.1.0
 SystemRequirements: Python (>= 3.0.0)
 Imports:
     data.table,
+    dplyr,
     reticulate
 Config/reticulate:
   list(
