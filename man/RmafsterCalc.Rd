@@ -35,7 +35,8 @@ samples = data.frame(
                sample_id='CT26',
                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
                package = 'RMAFster', mustWork=TRUE),
-               purity=1)
+               purity=1,
+               stringsAsFactors = FALSE)
 mutations = data.frame(
                  chr='chr8',
                  pos=115305465,

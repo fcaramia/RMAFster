@@ -31,7 +31,8 @@
 #'                sample_id='CT26',
 #'                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
 #'                package = 'RMAFster', mustWork=TRUE),
-#'                purity=1)
+#'                purity=1,
+#'                stringsAsFactors = FALSE)
 #' mutations = data.frame(
 #'                  chr='chr8',
 #'                  pos=115305465,
@@ -115,9 +116,9 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
     stop("RMAFster did not finish, exiting")
   }
 
-  if (file.exists('mutations_file.csv')) {
+  if (file.exists('mutation_file.csv')) {
     #Delete file if it exists
-    file.remove('mutations_file.csv')
+    file.remove('mutation_file.csv')
   }
 
   #Merge mutations with purity
