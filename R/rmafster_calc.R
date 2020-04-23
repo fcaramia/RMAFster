@@ -1,6 +1,6 @@
 #' \lifecycle{experimental}
 #'
-#' @description RmafsterCalc() calculates RMAFs for a set of mutations in specific BAM files.
+#' @description calculates RMAFs for a set of mutations in specific BAM files.
 #'
 #' @import data.table
 #' @importFrom reticulate source_python

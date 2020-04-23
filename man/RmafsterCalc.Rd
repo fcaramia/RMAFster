@@ -28,7 +28,7 @@ Optional columns:
 purity: tumour purity for sample (defaults to 1)}
 }
 \description{
-RmafsterCalc() calculates RMAFs for a set of mutations in specific BAM files.
+calculates RMAFs for a set of mutations in specific BAM files.
 }
 \examples{
 samples = data.frame(
