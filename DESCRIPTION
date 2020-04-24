@@ -22,6 +22,10 @@ Imports:
     data.table,
     dplyr,
     reticulate,
+    ggplot2,
+    patchwork,
+    reshape2,
+    ggpubr,
     lifecycle
 Config/reticulate:
   list(

@@ -17,16 +17,17 @@
 #' alt: mutated allele.
 #' Optional Columns:
 #' symbol: gene symbol,
-#' sample_id: the mutations are specific for samples, otherwise all mutations will searched in all samples,
-#' var: mutations type, defaults to 'SNP',
-#' vaf: variant allele frequency for mutation (defaults to 0.5),
-#' dna_dp: depth of dna sequencing for mutation (defaults to 200)
+#' sample_id: the mutations are specific for samples, if \code{NULL} all mutations are searched in all samples,
+#' var: mutations type, defaults to \code{'SNP'},
+#' vaf: variant allele frequency for mutation (defaults to \code{0.5}),
+#' dna_dp: depth of dna sequencing for mutation (defaults to \code{200})
 #' @param samples a data frame of samples
 #' Required columns:
 #' sample_id: an id for each sample,
-#' bam_path: full path for bam file (bai must be present in directory).
+#' bam_path: full path for .bam file (.bai file must be present in the same directory).
 #' Optional columns:
-#' purity: tumour purity for sample (defaults to 1)
+#' purity: tumour purity for sample (defaults to \code{1})
+#' @return a data frame copy of \code{mutations} with 6 additional columns: \code{"ref_alleles"}, \code{"alt_alleles"}, \code{"other_alleles"}, \code{"purity"}, \code{"rna_dp"} and \code{"rmaf"}.
 #' @examples
 #' samples = data.frame(
 #'                sample_id='CT26',
