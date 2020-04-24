@@ -2,7 +2,8 @@
 #'
 #' @description calculates RMAFs for a set of mutations in specific BAM files.
 #'
-#' @import data.table
+#' @importFrom data.table fread
+#' @importFrom data.table fwrite
 #' @importFrom reticulate source_python
 #' @importFrom dplyr left_join
 #'
@@ -128,6 +129,7 @@ RmafsterCalc <- function(mutations=NULL, samples=NULL){
   }else{
     ret_df <- left_join(ret_df,samples[,c('sample_id','purity')],by = c('sample_id'))
   }
-
+  ret_df$rna_dp = ret_df$ref_alleles + ret_df$alt_alleles + ret_df$other_alleles
+  ret_df$rmaf = ifelse(ret_df$rna_dp==0,NA,ret_df$alt_alleles/ret_df$rna_dp)
   return(ret_df)
 }

@@ -29,7 +29,7 @@ Config/reticulate:
       list(package = "pysam", pip = TRUE)
     )
   )
-Suggests: 
+Suggests:
     testthat
-RdMacros: 
+RdMacros:
     lifecycle

@@ -4,7 +4,7 @@
 \alias{RmafsterViz}
 \title{\lifecycle{experimental}}
 \usage{
-RmafsterViz()
+RmafsterViz(rmaf_df, plot_by = "symbol", min_num = 20)
 }
 \description{
 \lifecycle{experimental}
