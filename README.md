@@ -1,12 +1,3 @@
----
-title: "RMAFster Readme"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## RMAFster
 
 RMAfster allows to calculate RNA nutated allele frequencies (RMAFs) given a list of mutations and RNA-seq BAM files. 
