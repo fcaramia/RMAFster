@@ -1,6 +1,6 @@
 ## RMAFster
 
-RMAfster allows to calculate RNA nutated allele frequencies (RMAFs) given a list of mutations and RNA-seq BAM files. 
+RMAfster allows to calculate RNA mutated allele frequencies (RMAFs) given a list of mutations and RNA-seq BAM files. 
 
 
 ## Installation
