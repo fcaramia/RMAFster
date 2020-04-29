@@ -4,7 +4,7 @@
 \alias{RmafsterExpl}
 \title{\lifecycle{experimental}}
 \usage{
-RmafsterExpl(rmaf_df, plot_by = "none", min_num = 20)
+RmafsterExpl(rmaf_df, plot_by = "none", min_num = 20, print_plot = FALSE)
 }
 \arguments{
 \item{rmaf_df}{a data frame of rmafs.
@@ -15,6 +15,9 @@ Used to plot RMAFs by specific groups (maximum 12 values in group). Possible val
 
 \item{min_num}{numeric.
 The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by} is \code{'chr'}, a chromosome is required to have \code{min_num} of mutations to be included in plot}
+
+\item{print_plot}{logical.
+If \code{TRUE} plot is shown}
 }
 \value{
 a data frame copy of \code{rmaf_df} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.

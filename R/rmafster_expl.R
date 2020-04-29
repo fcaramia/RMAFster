@@ -16,6 +16,8 @@
 #' Used to plot RMAFs by specific groups (maximum 12 values in group). Possible values are 'none' (default) or any column name from rmaf_df. E.g. 'symbol'.
 #' @param min_num numeric.
 #' The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by} is \code{'chr'}, a chromosome is required to have \code{min_num} of mutations to be included in plot
+#' @param print_plot logical.
+#' If \code{TRUE} plot is shown
 #' @return a data frame copy of \code{rmaf_df} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
 #' @examples
 #' rmafs = data.frame(
@@ -43,7 +45,7 @@
 #'      20
 #' )
 #' @export
-RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20){
+RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20, print_plot = FALSE){
 
   if (dim(rmaf_df)[1] == 0 |dim(rmaf_df)[2] == 0) {
     stop('rmaf_df must contain data')
@@ -79,46 +81,50 @@ RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20){
   #Melt the statistics
   rmaf_df_melt = melt(data = rmaf_df[,c('z1','z2',plot_by)], variable.name = 'z', value.name = 'z_val', id.vars=c(3))
 
+  if(print_plot == TRUE){
   #Statistics plot
-  p1 = ggplot(data = rmaf_df_melt, aes(sample = .data$z_val,color=.data$z)) +
-    ggtitle(label = bquote(~'RMAFs'~ z[1]~ "and" ~z[2])) +
-    ylab(label = bquote(z ~ 'values') ) +
-    xlab(label = 'N(0,1)') +
-    stat_qq() +
-    facet_wrap(~get(plot_by)) +
-    geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) + theme_minimal() +
-    scale_colour_discrete(name = bquote(z), labels = c(bquote(z[1]), bquote(z[2]))) +
-    theme(plot.title = element_text(hjust = 0.5))
+    p1 = ggplot(data = rmaf_df_melt, aes(sample = .data$z_val,color=.data$z)) +
+      ggtitle(label = bquote(~'RMAFs'~ z[1]~ "and" ~z[2])) +
+      ylab(label = bquote(z ~ 'values') ) +
+      xlab(label = 'N(0,1)') +
+      stat_qq() +
+      facet_wrap(~get(plot_by)) +
+      geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) + theme_minimal() +
+      scale_colour_discrete(name = bquote(z), labels = c(bquote(z[1]), bquote(z[2]))) +
+      theme(plot.title = element_text(hjust = 0.5))
 
-  p2 = ggplot(data = rmaf_df,aes(x = .data$rmaf,y= .data$vaf, color=get(plot_by))) +
-    geom_point() +
-    theme_minimal() +
-    ggtitle(label = "RMAFs vs VAFs") +
-    xlim(0,1) +
-    ylim(0,1.5) +
-    geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) +
-    xlab(label = 'RMAF')  +
-    ylab('DNA VAF') +
-    stat_cor(method = "pearson", label.x = .10,label.y.npc = 'top',size=2, aes(color = get(plot_by)))+
-    theme(plot.title = element_text(hjust = 0.5)) +
-    scale_colour_discrete(name = plot_by)
+    p2 = ggplot(data = rmaf_df,aes(x = .data$rmaf,y= .data$vaf, color=get(plot_by))) +
+      geom_point() +
+      theme_minimal() +
+      ggtitle(label = "RMAFs vs VAFs") +
+      xlim(0,1) +
+      ylim(0,1.5) +
+      geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) +
+      xlab(label = 'RMAF')  +
+      ylab('DNA VAF') +
+      stat_cor(method = "pearson", label.x = .10,label.y.npc = 'top',size=2, aes(color = get(plot_by)))+
+      theme(plot.title = element_text(hjust = 0.5)) +
+      scale_colour_discrete(name = plot_by)
 
-  p3 = ggplot(data = rmaf_df,aes(x = .data$rna_dp*.data$purity,y= .data$rmaf*.data$rna_dp, color=get(plot_by))) +
-    geom_point() +
-    theme_minimal() +
-    ggtitle(label = "RMAFs") +
-    geom_abline(intercept = 0, slope = 0.5, color = "red", size = .5, alpha = 0.8) +
-    geom_abline(intercept = 0, slope = 1, color = "blue", size = .5, alpha = 0.8) +
-    geom_abline(intercept = 0, slope = 0, color = "green", size = .5, alpha = 0.8) +
-    xlab(label = 'Total mRNA reads * Purity')  + ylab('Mutated mRNA reads')+
-    theme(plot.title = element_text(hjust = 0.5)) +
-    scale_colour_discrete(name = plot_by)
+    p3 = ggplot(data = rmaf_df,aes(x = .data$rna_dp*.data$purity,y= .data$rmaf*.data$rna_dp, color=get(plot_by))) +
+      geom_point() +
+      theme_minimal() +
+      ggtitle(label = "RMAFs") +
+      geom_abline(intercept = 0, slope = 0.5, color = "red", size = .5, alpha = 0.8) +
+      geom_abline(intercept = 0, slope = 1, color = "blue", size = .5, alpha = 0.8) +
+      geom_abline(intercept = 0, slope = 0, color = "green", size = .5, alpha = 0.8) +
+      xlab(label = 'Total mRNA reads * Purity')  + ylab('Mutated mRNA reads')+
+      theme(plot.title = element_text(hjust = 0.5)) +
+      scale_colour_discrete(name = plot_by)
 
-  suppressWarnings(
-    print(
-      p1 / (p2 + p3)
+    # Print Plot
+    suppressWarnings(
+      print(
+        p1 / (p2 + p3)
+      )
     )
-  )
+  }
+
 
   rm(rmaf_df_melt)
   return(rmaf_df)
