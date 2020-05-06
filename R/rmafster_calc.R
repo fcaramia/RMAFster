@@ -42,7 +42,7 @@
 #'                  alt='A',
 #'                  sample_id='CT26',
 #'                  symbol ='Cntnap4')
-#' RmafsterCalc(
+#' rmafs = RmafsterCalc(
 #'      mutations,
 #'      samples
 #' )
