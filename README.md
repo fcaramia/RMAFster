@@ -1,13 +1,12 @@
 RMAFster
 ================
 
-RMAFster
---------
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-RMAfster allows to calculate RNA mutated allele frequencies (RMAFs) given a list of mutations and RNA-seq BAM files.
+RMAfster allows to calculate RNA mutated allele frequencies (RMAFs)
+given a list of mutations and RNA-seq BAM files.
 
-Installation
-------------
+## Installation
 
 You can install the development version from github using devtools:
 
@@ -16,19 +15,14 @@ You can install the development version from github using devtools:
 devtools::install_github("fcaramia/RMAFster")
 ```
 
-Basic example
--------------
+## Basic example
 
 ``` r
 library(RMAFster)
-```
-
-    ## RMAFster uses a local python environment to execute RmafsterCalc,
-    ##   unless you specify a python environment using reticule::use_...
-    ##   you will be prompted to install miniconda the first time you use RmasterCalc.
-    ##   Select (Y) to proceed. Python dependencies will be handled automatically
-
-``` r
+#> RMAFster uses a local python environment to execute RmafsterCalc,
+#>   unless you specify a python environment using reticule::use_...
+#>   you will be prompted to install miniconda the first time you use RmasterCalc.
+#>   Select (Y) to proceed. Python dependencies will be handled automatically
 samples = data.frame(
                sample_id='CT26',
                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
@@ -46,23 +40,20 @@ RmafsterCalc(
      mutations,
      samples
 )
+#> Warning in RmafsterCalc(mutations, samples): var column not found in mutation
+#> file, using SNP for all mutations
+#> Warning in RmafsterCalc(mutations, samples): vaf column not found in mutation
+#> file, using 0.5 for all mutations
+#> Warning in RmafsterCalc(mutations, samples): dna_dp column not found in mutation
+#> file, using 200 for all mutations
+#>    chr       pos ref alt sample_id  symbol var vaf dna_dp ref_alleles
+#> 1 chr8 115305465   G   A      CT26 Cntnap4 SNP 0.5    200           5
+#>   alt_alleles other_alleles purity rna_dp rmaf
+#> 1           5             0      1     10  0.5
 ```
 
-    ## Warning in RmafsterCalc(mutations, samples): var column not found in mutation
-    ## file, using SNP for all mutations
-
-    ## Warning in RmafsterCalc(mutations, samples): vaf column not found in mutation
-    ## file, using 0.5 for all mutations
-
-    ## Warning in RmafsterCalc(mutations, samples): dna_dp column not found in mutation
-    ## file, using 200 for all mutations
-
-    ##    chr       pos ref alt sample_id  symbol var vaf dna_dp ref_alleles
-    ## 1 chr8 115305465   G   A      CT26 Cntnap4 SNP 0.5    200           5
-    ##   alt_alleles other_alleles purity rna_dp rmaf
-    ## 1           5             0      1     10  0.5
-
-Once RMAFs are calculated you can quickly explore them and compare groups of genes/samples/etc..
+Once RMAFs are calculated you can quickly explore them and compare
+groups of genes/samples/etc..
 
 ``` r
 rmafs = data.frame(
@@ -92,19 +83,19 @@ RmafsterExpl(
 )
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](README-unnamed-chunk-2-1.png)<!-- -->
 
-    ## # A tibble: 330 x 9
-    ##    symbol n_muts  rmaf purity rna_dp dna_dp   vaf    z1     z2
-    ##    <chr>   <int> <dbl>  <dbl>  <int>  <int> <dbl> <dbl>  <dbl>
-    ##  1 gene1     100 0.935      1    304    477 0.666 15.2   8.72 
-    ##  2 gene1     100 0.801      1    305    135 0.223 10.5  11.5  
-    ##  3 gene1     100 0.8        1    164    265 0.413  7.68  7.85 
-    ##  4 gene1     100 0.874      1    307    280 0.277 13.1  14.7  
-    ##  5 gene1     100 0.852      1    156    212 0.153  8.79 13.3  
-    ##  6 gene1     100 0.94       1     66    178 0.731  7.15  3.55 
-    ##  7 gene1     100 0.97       1    136    113 0.603 11.0   7.26 
-    ##  8 gene1     100 0.829      1    323    342 0.649 11.8   5.27 
-    ##  9 gene1     100 0.887      1    248    183 0.901 12.2  -0.465
-    ## 10 gene1     100 0.875      1    347    222 0.644 14.0   6.54 
-    ## # … with 320 more rows
+    #> # A tibble: 330 x 9
+    #>    symbol n_muts  rmaf purity rna_dp dna_dp   vaf    z1    z2
+    #>    <chr>   <int> <dbl>  <dbl>  <int>  <int> <dbl> <dbl> <dbl>
+    #>  1 gene1     100 0.815      1     97    477 0.319  6.20  9.08
+    #>  2 gene1     100 0.857      1    432    447 0.894 14.8  -1.66
+    #>  3 gene1     100 0.904      1    285    135 0.467 13.6   9.84
+    #>  4 gene1     100 0.806      1     33    112 0.231  3.52  6.04
+    #>  5 gene1     100 0.804      1    470    425 0.431 13.2  11.5 
+    #>  6 gene1     100 0.942      1    158    478 0.615 11.1   7.75
+    #>  7 gene1     100 0.911      1    226    392 0.658 12.4   7.00
+    #>  8 gene1     100 0.847      1    230    178 0.964 10.5  -3.87
+    #>  9 gene1     100 0.993      1    500    491 0.734 22.0  11.9 
+    #> 10 gene1     100 0.981      1    181    465 0.303 12.9  15.5 
+    #> # … with 320 more rows

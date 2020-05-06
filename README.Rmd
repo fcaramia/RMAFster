@@ -3,8 +3,15 @@ title: "RMAFster"
 output: github_document
 ---
 
-## RMAFster
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-"
+)
+```
 RMAfster allows to calculate RNA mutated allele frequencies (RMAFs) given a list of mutations and RNA-seq BAM files. 
 
 
@@ -43,7 +50,7 @@ RmafsterCalc(
 
 Once RMAFs are calculated you can quickly explore them and compare groups of genes/samples/etc..
 
-```{r, message=FALSE}
+```{r plot, message=FALSE}
 rmafs = data.frame(
             rmaf = c(sample(800:1000,100,replace = TRUE)/1000,
                       sample(400:600,90,replace = TRUE)/1000,
