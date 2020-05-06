@@ -120,7 +120,7 @@ RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20, print_plot = FALSE
     # Print Plot
     suppressWarnings(
       print(
-        p1 / (p2 + p3)
+        p1 / (p2 + p3) + plot_layout(heights = c(2,1))
       )
     )
   }
