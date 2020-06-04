@@ -10,15 +10,15 @@
 #'
 #' @name RmafsterExpl
 #'
-#' @param rmaf_df a data frame of rmafs.
+#' @param rmaf_tbl a data frame of rmafs.
 #' The output from \code{RmafCalc()}
-#' @param plot_by a character string.
+#' @param plot_by_str a character string.
 #' Used to plot RMAFs by specific groups (maximum 12 values in group). Possible values are 'none' (default) or any column name from rmaf_df. E.g. 'symbol'.
-#' @param min_num numeric.
-#' The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by} is \code{'chr'}, a chromosome is required to have \code{min_num} of mutations to be included in plot
-#' @param print_plot logical.
+#' @param min_num_int numeric.
+#' The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by_str} is \code{'chr'}, a chromosome is required to have \code{min_num_int} of mutations to be included in plot
+#' @param print_plot_lgc logical.
 #' If \code{TRUE} plot is shown
-#' @return a data frame copy of \code{rmaf_df} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
+#' @return a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
 #' @examples
 #' rmafs = data.frame(
 #'             rmaf = c(sample(800:1000,100,replace = TRUE)/1000,
@@ -40,60 +40,60 @@
 #'                )
 #'
 #' RmafsterExpl(
-#'      rmafs,
-#'      'symbol',
-#'      20
+#'      rmaf_tbl = rmafs,
+#'      plot_by_str = 'symbol',
+#'      min_num_int = 20
 #' )
 #' @export
-RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20, print_plot = FALSE){
+RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plot_lgc = FALSE){
 
-  if (dim(rmaf_df)[1] == 0 |dim(rmaf_df)[2] == 0) {
-    stop('rmaf_df must contain data')
+  if (dim(rmaf_tbl)[1] == 0 |dim(rmaf_tbl)[2] == 0) {
+    stop('rmaf_tbl must contain data')
   }
-  if(plot_by!='none'&!plot_by%in%colnames(rmaf_df)){
-    stop('plot_by must be a column in rmaf_df')
+  if(plot_by_str!='none'&!plot_by_str%in%colnames(rmaf_tbl)){
+    stop('plot_by_str must be a column in rmaf_tbl')
   }
-  if(min_num<1){
+  if(min_num_int<1){
     stop('min_num must be larger than 0')
   }
-  if(!all(c('rmaf','purity','rna_dp','dna_dp','vaf')%in%colnames(rmaf_df))){
-    stop('missing columns in rmaf_df, required: "rmaf","purity","rna_dp","dna_dp","vaf"')
+  if(!all(c('rmaf','purity','rna_dp','dna_dp','vaf')%in%colnames(rmaf_tbl))){
+    stop('missing columns in rmaf_tbl, required: "rmaf","purity","rna_dp","dna_dp","vaf"')
   }
 
   #Exclude genes with low number of mutations
-  rmaf_df <- rmaf_df %>%
-    group_by_at(plot_by) %>%
+  rmaf_tbl <- rmaf_tbl %>%
+    group_by_at(plot_by_str) %>%
     summarise(n_muts=n()) %>%
-    left_join(rmaf_df, by=plot_by) %>%
-    filter(.data$n_muts>=min_num)
+    left_join(rmaf_tbl, by=plot_by_str) %>%
+    filter(.data$n_muts>=min_num_int)
 
   #Calculate z1
-  rmaf_df$z1 = ((rmaf_df$rmaf-0.5*rmaf_df$purity)) /
-    sqrt(((0.5*rmaf_df$purity)*(1-0.5*rmaf_df$purity))/rmaf_df$rna_dp)
+  rmaf_tbl$z1 = ((rmaf_tbl$rmaf-0.5*rmaf_tbl$purity)) /
+    sqrt(((0.5*rmaf_tbl$purity)*(1-0.5*rmaf_tbl$purity))/rmaf_tbl$rna_dp)
 
   #Calculate z2
-  rmaf_df$p = (rmaf_df$rmaf*rmaf_df$rna_dp + rmaf_df$vaf*rmaf_df$dna_dp) /  (rmaf_df$rna_dp + rmaf_df$dna_dp)
-  rmaf_df$var = rmaf_df$p*(1-rmaf_df$p)*((1/rmaf_df$rna_dp)+(1/rmaf_df$dna_dp))
-  rmaf_df$z2 = ifelse(rmaf_df$var==0,0,((rmaf_df$rmaf - rmaf_df$vaf)) / sqrt(rmaf_df$var))
-  rmaf_df$p = NULL
-  rmaf_df$var = NULL
+  rmaf_tbl$p = (rmaf_tbl$rmaf*rmaf_tbl$rna_dp + rmaf_tbl$vaf*rmaf_tbl$dna_dp) /  (rmaf_tbl$rna_dp + rmaf_tbl$dna_dp)
+  rmaf_tbl$var = rmaf_tbl$p*(1-rmaf_tbl$p)*((1/rmaf_tbl$rna_dp)+(1/rmaf_tbl$dna_dp))
+  rmaf_tbl$z2 = ifelse(rmaf_tbl$var==0,0,((rmaf_tbl$rmaf - rmaf_tbl$vaf)) / sqrt(rmaf_tbl$var))
+  rmaf_tbl$p = NULL
+  rmaf_tbl$var = NULL
 
   #Melt the statistics
-  rmaf_df_melt = melt(data = rmaf_df[,c('z1','z2',plot_by)], variable.name = 'z', value.name = 'z_val', id.vars=c(3))
+  rmaf_melt_tbl = melt(data = rmaf_tbl[,c('z1','z2',plot_by_str)], variable.name = 'z', value.name = 'z_val', id.vars=c(3))
 
-  if(print_plot == TRUE){
+  if(print_plot_lgc == TRUE){
   #Statistics plot
-    p1 = ggplot(data = rmaf_df_melt, aes(sample = .data$z_val,color=.data$z)) +
+    p1 = ggplot(data = rmaf_melt_tbl, aes(sample = .data$z_val,color=.data$z)) +
       ggtitle(label = bquote(~'RMAFs'~ z[1]~ "and" ~z[2])) +
       ylab(label = bquote(z ~ 'values') ) +
       xlab(label = 'N(0,1)') +
       stat_qq() +
-      facet_wrap(~get(plot_by)) +
+      facet_wrap(~get(plot_by_str)) +
       geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) + theme_minimal() +
       scale_colour_discrete(name = bquote(z), labels = c(bquote(z[1]), bquote(z[2]))) +
       theme(plot.title = element_text(hjust = 0.5))
 
-    p2 = ggplot(data = rmaf_df,aes(x = .data$rmaf,y= .data$vaf, color=get(plot_by))) +
+    p2 = ggplot(data = rmaf_tbl,aes(x = .data$rmaf,y= .data$vaf, color=get(plot_by_str))) +
       geom_point() +
       theme_minimal() +
       ggtitle(label = "RMAFs vs VAFs") +
@@ -102,11 +102,11 @@ RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20, print_plot = FALSE
       geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) +
       xlab(label = 'RMAF')  +
       ylab('DNA VAF') +
-      stat_cor(method = "pearson", label.x = .10,label.y.npc = 'top',size=2, aes(color = get(plot_by)))+
+      stat_cor(method = "pearson", label.x = .10,label.y.npc = 'top',size=2, aes(color = get(plot_by_str)))+
       theme(plot.title = element_text(hjust = 0.5)) +
-      scale_colour_discrete(name = plot_by)
+      scale_colour_discrete(name = plot_by_str)
 
-    p3 = ggplot(data = rmaf_df,aes(x = .data$rna_dp*.data$purity,y= .data$rmaf*.data$rna_dp, color=get(plot_by))) +
+    p3 = ggplot(data = rmaf_tbl,aes(x = .data$rna_dp*.data$purity,y= .data$rmaf*.data$rna_dp, color=get(plot_by_str))) +
       geom_point() +
       theme_minimal() +
       ggtitle(label = "RMAFs") +
@@ -115,7 +115,7 @@ RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20, print_plot = FALSE
       geom_abline(intercept = 0, slope = 0, color = "green", size = .5, alpha = 0.8) +
       xlab(label = 'Total mRNA reads * Purity')  + ylab('Mutated mRNA reads')+
       theme(plot.title = element_text(hjust = 0.5)) +
-      scale_colour_discrete(name = plot_by)
+      scale_colour_discrete(name = plot_by_str)
 
     # Print Plot
     suppressWarnings(
@@ -126,6 +126,6 @@ RmafsterExpl <- function(rmaf_df,plot_by='none',min_num = 20, print_plot = FALSE
   }
 
 
-  rm(rmaf_df_melt)
-  return(rmaf_df)
+  rm(rmaf_melt_tbl)
+  return(rmaf_tbl)
 }

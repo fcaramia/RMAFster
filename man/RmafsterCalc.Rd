@@ -4,10 +4,10 @@
 \alias{RmafsterCalc}
 \title{\lifecycle{experimental}}
 \usage{
-RmafsterCalc(mutations = NULL, samples = NULL)
+RmafsterCalc(mutations_tbl = NULL, samples_tbl = NULL)
 }
 \arguments{
-\item{mutations}{a data frame of mutations.
+\item{mutations_tbl}{a data frame of mutations.
 Required columns:
 chr: chromosome,
 pos: genomic position,
@@ -20,7 +20,7 @@ var: mutations type, defaults to \code{'SNP'},
 vaf: variant allele frequency for mutation (defaults to \code{0.5}),
 dna_dp: depth of dna sequencing for mutation (defaults to \code{200})}
 
-\item{samples}{a data frame of samples
+\item{samples_tbl}{a data frame of samples
 Required columns:
 sample_id: an id for each sample,
 bam_path: full path for .bam file (.bai file must be present in the same directory).
@@ -34,21 +34,21 @@ a data frame copy of \code{mutations} with 6 additional columns: \code{"ref_alle
 calculates RMAFs for a set of mutations in specific BAM files.
 }
 \examples{
-samples = data.frame(
+samples_tbl = data.frame(
                sample_id='CT26',
                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
                package = 'RMAFster', mustWork=TRUE),
                purity=1,
                stringsAsFactors = FALSE)
-mutations = data.frame(
+mutations_tbl = data.frame(
                  chr='chr8',
                  pos=115305465,
                  ref='G',
                  alt='A',
                  sample_id='CT26',
                  symbol ='Cntnap4')
-RmafsterCalc(
-     mutations,
-     samples
+rmafs = RmafsterCalc(
+     mutations_tbl,
+     samples_tbl
 )
 }

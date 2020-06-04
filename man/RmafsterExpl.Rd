@@ -4,23 +4,28 @@
 \alias{RmafsterExpl}
 \title{\lifecycle{experimental}}
 \usage{
-RmafsterExpl(rmaf_df, plot_by = "none", min_num = 20, print_plot = FALSE)
+RmafsterExpl(
+  rmaf_tbl,
+  plot_by_str = "none",
+  min_num_int = 20,
+  print_plot_lgc = FALSE
+)
 }
 \arguments{
-\item{rmaf_df}{a data frame of rmafs.
+\item{rmaf_tbl}{a data frame of rmafs.
 The output from \code{RmafCalc()}}
 
-\item{plot_by}{a character string.
+\item{plot_by_str}{a character string.
 Used to plot RMAFs by specific groups (maximum 12 values in group). Possible values are 'none' (default) or any column name from rmaf_df. E.g. 'symbol'.}
 
-\item{min_num}{numeric.
-The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by} is \code{'chr'}, a chromosome is required to have \code{min_num} of mutations to be included in plot}
+\item{min_num_int}{numeric.
+The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by_str} is \code{'chr'}, a chromosome is required to have \code{min_num_int} of mutations to be included in plot}
 
-\item{print_plot}{logical.
+\item{print_plot_lgc}{logical.
 If \code{TRUE} plot is shown}
 }
 \value{
-a data frame copy of \code{rmaf_df} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
+a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
 }
 \description{
 explores RMAFs, the output of \code{RmafsterCalc()}, by calculating the z1 and z2 statistics and visualising using diverse plots.
@@ -46,8 +51,8 @@ rmafs = data.frame(
                )
 
 RmafsterExpl(
-     rmafs,
-     'symbol',
-     20
+     rmaf_tbl = rmafs,
+     plot_by_str = 'symbol',
+     min_num_int = 20
 )
 }
