@@ -21,17 +21,17 @@
 #' @return a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
 #' @examples
 #' rmafs = data.frame(
-#'             rmaf = c(sample(800:1000,100,replace = TRUE)/1000,
+#'             rmaf = c(sample(800:900,100,replace = TRUE)/1000,
 #'                       sample(400:600,90,replace = TRUE)/1000,
-#'                       sample(0:1000,80,replace = TRUE)/1000,
+#'                       sample(0:900,80,replace = TRUE)/1000,
 #'                       sample(0:300,60,replace = TRUE)/1000,
-#'                       sample(1:1000,10,replace = TRUE)/1000
+#'                       sample(1:900,10,replace = TRUE)/1000
 #'                      ),
-#'             rna_purity = c(rep(1,340)),
-#'             dna_purity = c(rep(1,340)),
+#'             rna_purity = c(rep(.9,340)),
+#'             dna_purity = c(rep(.8,340)),
 #'             rna_dp = c(sample(20:500,340,replace = TRUE)),
 #'             dna_dp = c(sample(100:500,340,replace = TRUE)),
-#'             vaf = c(sample(50:1000,340,replace = TRUE)/1000),
+#'             vaf = c(sample(50:800,340,replace = TRUE)/1000),
 #'             symbol = c(rep('gene1',100),
 #'                        rep('gene2',90),
 #'                        rep('gene3',80),
