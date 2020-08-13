@@ -20,20 +20,22 @@
 #' sample_id: the mutations are specific for samples, if \code{NULL} all mutations are searched in all samples,
 #' var: mutations type, defaults to \code{'SNP'},
 #' vaf: variant allele frequency for mutation (defaults to \code{0.5}),
-#' dna_dp: depth of dna sequencing for mutation (defaults to \code{200})
+#' dna_dp: depth of dna sequencing at mutation site (defaults to \code{200})
 #' @param samples_tbl a data frame of samples
 #' Required columns:
 #' sample_id: an id for each sample,
 #' bam_path: full path for .bam file (.bai file must be present in the same directory).
 #' Optional columns:
-#' purity: tumour purity for sample (defaults to \code{1})
-#' @return a data frame copy of \code{mutations} with 6 additional columns: \code{"ref_alleles"}, \code{"alt_alleles"}, \code{"other_alleles"}, \code{"purity"}, \code{"rna_dp"} and \code{"rmaf"}.
+#' rna_purity: tumour purity for rna sample (defaults to \code{1})
+#' dna_purity: tumour purity for dna sample (defaults to \code{1})
+#' @return a data frame copy of \code{mutations} with 7 additional columns: \code{"ref_alleles"}, \code{"alt_alleles"}, \code{"other_alleles"}, \code{"rna_purity"}, \code{"dna_purity"}, \code{"rna_dp"} and \code{"rmaf"}.
 #' @examples
 #' samples_tbl = data.frame(
 #'                sample_id='CT26',
 #'                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
 #'                package = 'RMAFster', mustWork=TRUE),
-#'                purity=1,
+#'                rna_purity=1,
+#'                dna_purity=1,
 #'                stringsAsFactors = FALSE)
 #' mutations_tbl = data.frame(
 #'                  chr='chr8',
@@ -124,11 +126,20 @@ RmafsterCalc <- function(mutations_tbl=NULL, samples_tbl=NULL){
   }
 
   #Merge mutations with purity
-  if( !'purity'%in%colnames(samples_tbl) ){
-    warning('purity column not found in samples file, using 1 for all samples')
-    mutations_tbl$purity = 1
+  if( !'rna_purity'%in%colnames(samples_tbl) ){
+    warning('rna_purity column not found in samples file, using 1 for all samples')
+    mutations_tbl$rna_purity = 1
+
   }else{
-    ret_tbl <- left_join(ret_tbl,samples_tbl[,c('sample_id','purity')],by = c('sample_id'))
+    ret_tbl <- left_join(ret_tbl,samples_tbl[,c('sample_id','rna_purity')],by = c('sample_id'))
+  }
+  #Merge mutations with purity
+  if( !'dna_purity'%in%colnames(samples_tbl) ){
+    warning('dna_purity column not found in samples file, using 1 for all samples')
+    mutations_tbl$dna_purity = 1
+
+  }else{
+    ret_tbl <- left_join(ret_tbl,samples_tbl[,c('sample_id','dna_purity')],by = c('sample_id'))
   }
   ret_tbl$rna_dp = ret_tbl$ref_alleles + ret_tbl$alt_alleles + ret_tbl$other_alleles
   ret_tbl$rmaf = ifelse(ret_tbl$rna_dp==0,NA,ret_tbl$alt_alleles/ret_tbl$rna_dp)

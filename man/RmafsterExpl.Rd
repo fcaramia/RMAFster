@@ -38,7 +38,8 @@ rmafs = data.frame(
                       sample(0:300,60,replace = TRUE)/1000,
                       sample(1:1000,10,replace = TRUE)/1000
                      ),
-            purity = c(rep(1,340)),
+            rna_purity = c(rep(1,340)),
+            dna_purity = c(rep(1,340)),
             rna_dp = c(sample(20:500,340,replace = TRUE)),
             dna_dp = c(sample(100:500,340,replace = TRUE)),
             vaf = c(sample(50:1000,340,replace = TRUE)/1000),

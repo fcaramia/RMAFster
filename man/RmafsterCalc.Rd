@@ -18,17 +18,18 @@ symbol: gene symbol,
 sample_id: the mutations are specific for samples, if \code{NULL} all mutations are searched in all samples,
 var: mutations type, defaults to \code{'SNP'},
 vaf: variant allele frequency for mutation (defaults to \code{0.5}),
-dna_dp: depth of dna sequencing for mutation (defaults to \code{200})}
+dna_dp: depth of dna sequencing at mutation site (defaults to \code{200})}
 
 \item{samples_tbl}{a data frame of samples
 Required columns:
 sample_id: an id for each sample,
 bam_path: full path for .bam file (.bai file must be present in the same directory).
 Optional columns:
-purity: tumour purity for sample (defaults to \code{1})}
+rna_purity: tumour purity for rna sample (defaults to \code{1})
+dna_purity: tumour purity for dna sample (defaults to \code{1})}
 }
 \value{
-a data frame copy of \code{mutations} with 6 additional columns: \code{"ref_alleles"}, \code{"alt_alleles"}, \code{"other_alleles"}, \code{"purity"}, \code{"rna_dp"} and \code{"rmaf"}.
+a data frame copy of \code{mutations} with 7 additional columns: \code{"ref_alleles"}, \code{"alt_alleles"}, \code{"other_alleles"}, \code{"rna_purity"}, \code{"dna_purity"}, \code{"rna_dp"} and \code{"rmaf"}.
 }
 \description{
 calculates RMAFs for a set of mutations in specific BAM files.
@@ -38,7 +39,8 @@ samples_tbl = data.frame(
                sample_id='CT26',
                bam_path=system.file("extdata","CT26_chr8_115305465.bam",
                package = 'RMAFster', mustWork=TRUE),
-               purity=1,
+               rna_purity=1,
+               dna_purity=1,
                stringsAsFactors = FALSE)
 mutations_tbl = data.frame(
                  chr='chr8',

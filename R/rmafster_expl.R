@@ -27,7 +27,8 @@
 #'                       sample(0:300,60,replace = TRUE)/1000,
 #'                       sample(1:1000,10,replace = TRUE)/1000
 #'                      ),
-#'             purity = c(rep(1,340)),
+#'             rna_purity = c(rep(1,340)),
+#'             dna_purity = c(rep(1,340)),
 #'             rna_dp = c(sample(20:500,340,replace = TRUE)),
 #'             dna_dp = c(sample(100:500,340,replace = TRUE)),
 #'             vaf = c(sample(50:1000,340,replace = TRUE)/1000),
@@ -56,8 +57,8 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
   if(min_num_int<1){
     stop('min_num must be larger than 0')
   }
-  if(!all(c('rmaf','purity','rna_dp','dna_dp','vaf')%in%colnames(rmaf_tbl))){
-    stop('missing columns in rmaf_tbl, required: "rmaf","purity","rna_dp","dna_dp","vaf"')
+  if(!all(c('rmaf','rna_purity','dna_purity','rna_dp','dna_dp','vaf')%in%colnames(rmaf_tbl))){
+    stop('missing columns in rmaf_tbl, required: "rmaf","rna_purity","dna_purity","rna_dp","dna_dp","vaf"')
   }
 
   #Exclude genes with low number of mutations
@@ -68,13 +69,15 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
     filter(.data$n_muts>=min_num_int)
 
   #Calculate z1
-  rmaf_tbl$z1 = ((rmaf_tbl$rmaf-0.5*rmaf_tbl$purity)) /
-    sqrt(((0.5*rmaf_tbl$purity)*(1-0.5*rmaf_tbl$purity))/rmaf_tbl$rna_dp)
+  rmaf_tbl$z1 = ((rmaf_tbl$rmaf-0.5*rmaf_tbl$rna_purity)) /
+    sqrt(((0.5*rmaf_tbl$rna_purity)*(1-0.5*rmaf_tbl$rna_purity))/rmaf_tbl$rna_dp)
 
   #Calculate z2
-  rmaf_tbl$p = (rmaf_tbl$rmaf*rmaf_tbl$rna_dp + rmaf_tbl$vaf*rmaf_tbl$dna_dp) /  (rmaf_tbl$rna_dp + rmaf_tbl$dna_dp)
+  rmaf_tbl$p = ( ((rmaf_tbl$rmaf*rmaf_tbl$rna_dp)/rmaf_tbl$rna_purity) +
+                   (rmaf_tbl$vaf*rmaf_tbl$dna_dp)/rmaf_tbl$dna_purity) /
+    (rmaf_tbl$rna_dp + rmaf_tbl$dna_dp)
   rmaf_tbl$var = rmaf_tbl$p*(1-rmaf_tbl$p)*((1/rmaf_tbl$rna_dp)+(1/rmaf_tbl$dna_dp))
-  rmaf_tbl$z2 = ifelse(rmaf_tbl$var==0,0,((rmaf_tbl$rmaf - rmaf_tbl$vaf)) / sqrt(rmaf_tbl$var))
+  rmaf_tbl$z2 = ifelse(rmaf_tbl$var==0,0,((rmaf_tbl$rmaf/rmaf_tbl$rna_purity) - (rmaf_tbl$vaf/rmaf_tbl$dna_purity)) / sqrt(rmaf_tbl$var))
   rmaf_tbl$p = NULL
   rmaf_tbl$var = NULL
 
@@ -93,27 +96,27 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
       scale_colour_discrete(name = bquote(z), labels = c(bquote(z[1]), bquote(z[2]))) +
       theme(plot.title = element_text(hjust = 0.5))
 
-    p2 = ggplot(data = rmaf_tbl,aes(x = .data$rmaf,y= .data$vaf, color=get(plot_by_str))) +
+    p2 = ggplot(data = rmaf_tbl,aes(x = .data$rmaf/.data$rna_purity,y= .data$vaf/.data$dna_purity, color=get(plot_by_str))) +
       geom_point() +
       theme_minimal() +
       ggtitle(label = "RMAFs vs VAFs") +
       xlim(0,1) +
       ylim(0,1.5) +
       geom_abline(intercept = 0, slope = 1, color = "red", size = .5, alpha = 0.8) +
-      xlab(label = 'RMAF')  +
-      ylab('DNA VAF') +
+      xlab(label = 'RMAF/RNA Purity')  +
+      ylab('DNA VAF/DNA Purity') +
       stat_cor(method = "pearson", label.x = .10,label.y.npc = 'top',size=2, aes(color = get(plot_by_str)))+
       theme(plot.title = element_text(hjust = 0.5)) +
       scale_colour_discrete(name = plot_by_str)
 
-    p3 = ggplot(data = rmaf_tbl,aes(x = .data$rna_dp*.data$purity,y= .data$rmaf*.data$rna_dp, color=get(plot_by_str))) +
+    p3 = ggplot(data = rmaf_tbl,aes(x = .data$rna_dp*.data$rna_purity,y= .data$rmaf*.data$rna_dp, color=get(plot_by_str))) +
       geom_point() +
       theme_minimal() +
       ggtitle(label = "RMAFs") +
       geom_abline(intercept = 0, slope = 0.5, color = "red", size = .5, alpha = 0.8) +
       geom_abline(intercept = 0, slope = 1, color = "blue", size = .5, alpha = 0.8) +
       geom_abline(intercept = 0, slope = 0, color = "green", size = .5, alpha = 0.8) +
-      xlab(label = 'Total mRNA reads * Purity')  + ylab('Mutated mRNA reads')+
+      xlab(label = 'Total mRNA reads * RNA_Purity')  + ylab('Mutated mRNA reads')+
       theme(plot.title = element_text(hjust = 0.5)) +
       scale_colour_discrete(name = plot_by_str)
 
