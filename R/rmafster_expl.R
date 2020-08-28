@@ -76,7 +76,7 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
   rmaf_tbl$p = ( ((rmaf_tbl$rmaf*rmaf_tbl$rna_dp)/rmaf_tbl$rna_purity) +
                    (rmaf_tbl$vaf*rmaf_tbl$dna_dp)/rmaf_tbl$dna_purity) /
     (rmaf_tbl$rna_dp + rmaf_tbl$dna_dp)
-  rmaf_tbl$var = rmaf_tbl$p*(1-rmaf_tbl$p)*((1/rmaf_tbl$rna_dp)+(1/rmaf_tbl$dna_dp))
+  rmaf_tbl$var = (rmaf_tbl$p*(1-rmaf_tbl$p))*((1/rmaf_tbl$rna_dp)+(1/rmaf_tbl$dna_dp))
   rmaf_tbl$z2 = ifelse(rmaf_tbl$var==0,0,((rmaf_tbl$rmaf/rmaf_tbl$rna_purity) - (rmaf_tbl$vaf/rmaf_tbl$dna_purity)) / sqrt(rmaf_tbl$var))
   rmaf_tbl$p = NULL
   rmaf_tbl$var = NULL
