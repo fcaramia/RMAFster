@@ -205,6 +205,8 @@ def rmafster(argv):
                 # print m
                 res = get_ex_mut_rate(sample_map[sample], m[chrom_index], int(m[pos_index]),
                                       m[ref_index], m[alt_index], m[type_index])
+                if res['ref'] == 0 and res['alt'] == 0 and res['noise'] == 0:
+                    continue
                 outwriter.writerow(m + [res['ref'], res['alt'], res['noise']])
             else:
                 if sample not in samples_not_found:
@@ -214,8 +216,13 @@ def rmafster(argv):
                 m[sample_index] = s
                 res = get_ex_mut_rate(sample_map_all[s], m[chrom_index], int(m[pos_index]),
                                       m[ref_index], m[alt_index], m[type_index])
+                if res['ref'] == 0 and res['alt'] == 0 and res['noise'] == 0:
+                    continue
                 outwriter.writerow(m + [res['ref'], res['alt'], res['noise']])
 
     for s in samples_not_found:
         print("Warning: sample " + s + " not in files")
 
+
+if __name__ == "__main__":
+    rmafster(sys.argv[1:])
