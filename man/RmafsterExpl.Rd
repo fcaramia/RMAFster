@@ -9,8 +9,8 @@ RmafsterExpl(
   plot_by_str = "none",
   min_num_int = 20,
   print_plot_lgc = FALSE,
-  return_plot_list = FALSE
-
+  return_plot_list = FALSE,
+  remove_outliers = FALSE
 )
 }
 \arguments{
@@ -27,10 +27,13 @@ The minimum number of mutations per group-value to be included in plots. E.g. if
 If \code{TRUE} plot is shown}
 
 \item{return_plot_list}{logical.
-If \code{TRUE} a list with plot objects and matrix is returned}
+If \code{TRUE} a list of objects is returned}
+
+\item{remove_outliers}{logical
+If \code{TRUE} remove z1 ad z2 outliers}
 }
 \value{
-a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
+a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics. If \code{return_plot_list} == \code{TRUE} a list of objects is returned
 }
 \description{
 explores RMAFs, the output of \code{RmafsterCalc()}, by calculating the z1 and z2 statistics and visualising using diverse plots.

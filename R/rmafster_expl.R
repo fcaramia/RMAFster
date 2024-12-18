@@ -20,6 +20,8 @@
 #' If \code{TRUE} plot is shown
 #' @param return_plot_list logical.
 #' If \code{TRUE} a list of objects is returned
+#' @param remove_outliers logical
+#' If \code{TRUE} remove z1 ad z2 outliers
 #' @return a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics. If \code{return_plot_list} == \code{TRUE} a list of objects is returned
 #' @examples
 #' rmafs = data.frame(
@@ -48,7 +50,7 @@
 #'      min_num_int = 20
 #' )
 #' @export
-RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plot_lgc = FALSE, return_plot_list = FALSE){
+RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plot_lgc = FALSE, return_plot_list = FALSE, remove_outliers = FALSE){
 
   if (dim(rmaf_tbl)[1] == 0 |dim(rmaf_tbl)[2] == 0) {
     stop('rmaf_tbl must contain data')
@@ -85,6 +87,20 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
   rmaf_tbl$z2 = ifelse(rmaf_tbl$var==0,0,((rmaf_tbl$rmaf/rmaf_tbl$rna_purity) - (rmaf_tbl$vaf/rmaf_tbl$dna_purity)) / sqrt(rmaf_tbl$var))
   rmaf_tbl$p = NULL
   rmaf_tbl$var = NULL
+
+  #Remove outliers
+  if(remove_outliers == TRUE){
+    remove_outliers <- function(x) {
+      qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
+      H <- 1.5 * IQR(x, na.rm = TRUE)
+      y <- x
+      y[x < (qnt[1] - H)] <- NA
+      y[x > (qnt[2] + H)] <- NA
+      y
+    }
+    rmaf_tbl$z1 = remove_outliers(rmaf_tbl$z1)
+    rmaf_tbl$z1 = remove_outliers(rmaf_tbl$z2)
+  }
 
   #Melt the statistics
   rmaf_melt_tbl = melt(data = rmaf_tbl[,c('z1','z2',plot_by_str)], variable.name = 'z', value.name = 'z_val', id.vars=c(3))
