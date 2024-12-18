@@ -224,5 +224,5 @@ def rmafster(argv):
         print("Warning: sample " + s + " not in files")
 
 
-if __name__ == "__main__":
-    rmafster(sys.argv[1:])
+#if __name__ == "__main__":
+#    rmafster(sys.argv[1:])
