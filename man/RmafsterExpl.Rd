@@ -8,7 +8,9 @@ RmafsterExpl(
   rmaf_tbl,
   plot_by_str = "none",
   min_num_int = 20,
-  print_plot_lgc = FALSE
+  print_plot_lgc = FALSE,
+  return_plot_list = FALSE
+
 )
 }
 \arguments{
@@ -23,6 +25,9 @@ The minimum number of mutations per group-value to be included in plots. E.g. if
 
 \item{print_plot_lgc}{logical.
 If \code{TRUE} plot is shown}
+
+\item{return_plot_list}{logical.
+If \code{TRUE} a list with plot objects and matrix is returned}
 }
 \value{
 a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
