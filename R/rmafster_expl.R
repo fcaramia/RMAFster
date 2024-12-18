@@ -18,7 +18,9 @@
 #' The minimum number of mutations per group-value to be included in plots. E.g. if \code{plot_by_str} is \code{'chr'}, a chromosome is required to have \code{min_num_int} of mutations to be included in plot
 #' @param print_plot_lgc logical.
 #' If \code{TRUE} plot is shown
-#' @return a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics.
+#' @param return_plot_list logical.
+#' If \code{TRUE} a list of objects is returned
+#' @return a data frame copy of \code{rmaf_tbl} with 2 additional columns: \code{"z1"} and \code{"z2"}, which correspond to the calculated statistics. If \code{return_plot_list} == \code{TRUE} a list of objects is returned
 #' @examples
 #' rmafs = data.frame(
 #'             rmaf = c(sample(800:900,100,replace = TRUE)/1000,
@@ -46,7 +48,7 @@
 #'      min_num_int = 20
 #' )
 #' @export
-RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plot_lgc = FALSE){
+RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plot_lgc = FALSE, return_plot_list = FALSE){
 
   if (dim(rmaf_tbl)[1] == 0 |dim(rmaf_tbl)[2] == 0) {
     stop('rmaf_tbl must contain data')
@@ -62,6 +64,9 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
   }
 
   #Exclude genes with low number of mutations
+  if (plot_by_str == 'none'){
+    rmaf_tbl$none = 1
+  }
   rmaf_tbl <- rmaf_tbl %>%
     group_by_at(plot_by_str) %>%
     summarise(n_muts=n()) %>%
@@ -84,7 +89,7 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
   #Melt the statistics
   rmaf_melt_tbl = melt(data = rmaf_tbl[,c('z1','z2',plot_by_str)], variable.name = 'z', value.name = 'z_val', id.vars=c(3))
 
-  if(print_plot_lgc == TRUE){
+  if(print_plot_lgc == TRUE | return_plot_list == TRUE){
   #Statistics plot
     p1 = ggplot(data = rmaf_melt_tbl, aes(sample = .data$z_val,color=.data$z)) +
       ggtitle(label = bquote(~'RMAFs'~ z[1]~ "and" ~z[2])) +
@@ -121,14 +126,19 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
       scale_colour_discrete(name = plot_by_str)
 
     # Print Plot
-    suppressWarnings(
-      print(
-        p1 / (p2 + p3)
+    if (print_plot_lgc == TRUE){
+      suppressWarnings(
+        print(
+          p1 / (p2 + p3)
+        )
       )
-    )
+    }
   }
 
 
   rm(rmaf_melt_tbl)
+  if (return_plot_list==TRUE){
+    return(list(rmaf_tbl,p1,p2,p3))
+  }
   return(rmaf_tbl)
 }
