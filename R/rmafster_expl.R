@@ -99,7 +99,7 @@ RmafsterExpl <- function(rmaf_tbl,plot_by_str='none',min_num_int = 20, print_plo
       y
     }
     rmaf_tbl$z1 = remove_outliers(rmaf_tbl$z1)
-    rmaf_tbl$z1 = remove_outliers(rmaf_tbl$z2)
+    rmaf_tbl$z2 = remove_outliers(rmaf_tbl$z2)
   }
 
   #Melt the statistics
